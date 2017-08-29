@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:textStyle="bold"
+            android:textSize="16dp"
             android:layout_gravity="center"
             tools:text="七夕" />
 
