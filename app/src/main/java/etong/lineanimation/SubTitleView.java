@@ -15,7 +15,7 @@ public class SubTitleView extends AppCompatTextView implements ValueAnimator.Ani
 
     private Paint paint;
 
-    private float value = 0;
+    private float percent = 0;
 
     private float maxRound;
 
@@ -50,8 +50,8 @@ public class SubTitleView extends AppCompatTextView implements ValueAnimator.Ani
         blr = getWidth() + getHeight() * 2;
     }
 
-    public void setValue(float f) {
-        this.value = f;
+    public void setPercent(float f) {
+        this.percent = f;
         setTextColor(Color.argb((int) (f * 255), 255, 255, 255));
     }
 
@@ -63,7 +63,7 @@ public class SubTitleView extends AppCompatTextView implements ValueAnimator.Ani
 
     public void animate(float f) {
         ValueAnimator valueAnimator = new ValueAnimator();
-        valueAnimator.setFloatValues(value, f);
+        valueAnimator.setFloatValues(percent, f);
         valueAnimator.setDuration(500);
         valueAnimator.addUpdateListener(this);
         valueAnimator.start();
@@ -72,32 +72,38 @@ public class SubTitleView extends AppCompatTextView implements ValueAnimator.Ani
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        float round = maxRound * value;
-        if (round <= stokeWidth) {
+        float currentRound = maxRound * percent;
+        if (currentRound <= stokeWidth) {
             return;
         }
-        if (round <= getWidth()) {
-            canvas.drawRect((getWidth() - round) / 2, getHeight() - stokeWidth, (getWidth() + round) / 2, getHeight(), paint);
-        } else if (round <= blr) {
+        if (currentRound <= getWidth()) {
+            canvas.drawRect((getWidth() - currentRound) / 2, getHeight() - stokeWidth, (getWidth() + currentRound) / 2, getHeight(), paint);
+        } else if (currentRound <= blr) {
             canvas.drawRect(0, getHeight() - stokeWidth, getWidth(), getHeight(), paint);
-            float y = getHeight() - (round - getWidth()) / 2;
+            float y = getHeight() - (currentRound - getWidth()) / 2;
             canvas.drawRect(0, y, stokeWidth, getHeight(), paint);
             canvas.drawRect(getWidth() - stokeWidth, y, getWidth(), getHeight(), paint);
         } else {
+            //bottom
             canvas.drawRect(0, getHeight() - stokeWidth, getWidth(), getHeight(), paint);
+            //left
             canvas.drawRect(0, 0, stokeWidth, getHeight(), paint);
+            //right
             canvas.drawRect(getWidth() - stokeWidth, 0, getWidth(), getHeight(), paint);
 
-            float r = (round - blr) / 2;
+            float r = (currentRound - blr) / 2;
+            //topLeft
             canvas.drawRect(0, 0, r, stokeWidth, paint);
+            //topRight
             canvas.drawRect(getWidth() - r, 0, getWidth(), stokeWidth, paint);
         }
     }
 
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
-        value = (float) animation.getAnimatedValue();
-        setTextColor(Color.argb((int) (value * 255), 255, 255, 255));
+        percent = (float) animation.getAnimatedValue();
+        setTextColor(Color.argb((int) (percent * 255), 255, 255, 255));
         invalidate();
     }
+
 }

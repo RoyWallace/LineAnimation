@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.facebook.drawee.drawable.ScalingUtils;
@@ -42,6 +43,8 @@ public class DetailActivity extends AppCompatActivity implements AppBarLayout.On
     String backgroundImage;
     String subTitle;
 
+    Button button;
+
     List<String> list = new ArrayList<>();
 
     @Override
@@ -59,6 +62,8 @@ public class DetailActivity extends AppCompatActivity implements AppBarLayout.On
         title = getIntent().getStringExtra(TITLE);
         subTitle = getIntent().getStringExtra(SUBTITLE);
         backgroundImage = getIntent().getStringExtra(IMAGEURL);
+
+        button = (Button) findViewById(R.id.button);
 
         list.add("123");
         list.add("123");
@@ -135,17 +140,25 @@ public class DetailActivity extends AppCompatActivity implements AppBarLayout.On
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(new SimpleAdapter(list));
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                subTitleView.setPercent(0);
+                subTitleView.animate(1);
+            }
+        });
     }
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         if (!TextUtils.isEmpty(subTitle)) {
             float value = appBar.getHeight() - toolbar.getHeight() * 2;
-            float a = (value + verticalOffset) / value;
-            if (a < 0) {
-                a = 0;
+            float p = (value + verticalOffset) / value;
+            if (p < 0) {
+                p = 0;
             }
-            subTitleView.setValue(a);
+            subTitleView.setPercent(p);
         }
 
 //        if (Math.abs(verticalOffset) > appBarLayout.getHeight() / 2) {

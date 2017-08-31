@@ -15,7 +15,6 @@
             android:id="@+id/collapsingToolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:contentScrim="@color/colorPrimary"
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
@@ -81,4 +80,12 @@
         android:textColor="@color/white"
         android:textSize="14dp"
         tools:text="春天到了，又到了交配的季节。" />
+
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="show"
+        android:layout_gravity="bottom"/>
 </android.support.design.widget.CoordinatorLayout>
