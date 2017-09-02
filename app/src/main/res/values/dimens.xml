@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="min_line">12dp</dimen>
+    <dimen name="min_length">12dp</dimen>
+    <dimen name="subtitle_margin">16dp</dimen>
 
 </resources>

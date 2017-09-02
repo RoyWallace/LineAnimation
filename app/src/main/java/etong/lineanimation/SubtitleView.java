@@ -11,7 +11,7 @@ import android.util.AttributeSet;
 /**
  * Created by hwt on 2017/7/5.
  */
-public class SubTitleView extends AppCompatTextView implements ValueAnimator.AnimatorUpdateListener {
+public class SubtitleView extends AppCompatTextView implements ValueAnimator.AnimatorUpdateListener {
 
     private Paint paint;
 
@@ -23,27 +23,27 @@ public class SubTitleView extends AppCompatTextView implements ValueAnimator.Ani
 
     private int stokeWidth = 2;
 
-    private int topLineSize = 0;
+    private int length = 0;
 
-    public SubTitleView(Context context) {
+    public SubtitleView(Context context) {
         super(context);
     }
 
-    public SubTitleView(Context context, AttributeSet attrs) {
+    public SubtitleView(Context context, AttributeSet attrs) {
         super(context, attrs);
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(Color.WHITE);
     }
 
-    public SubTitleView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SubtitleView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        if (topLineSize != 0) {
-            maxRound = getHeight() * 2 + getWidth() + topLineSize;
+        if (length != 0) {
+            maxRound = getHeight() * 2 + getWidth() + length;
         } else {
             maxRound = getHeight() * 2 + getWidth() * 1.5f;
         }
@@ -55,9 +55,9 @@ public class SubTitleView extends AppCompatTextView implements ValueAnimator.Ani
         setTextColor(Color.argb((int) (f * 255), 255, 255, 255));
     }
 
-    public void setMinLine(int length) {
-        this.topLineSize = length;
-        maxRound = getHeight() * 2 + getWidth() + length;
+    public void setLength(int length) {
+        this.length = length;
+        this.maxRound = getHeight() * 2 + getWidth() + length;
         postInvalidate();
     }
 

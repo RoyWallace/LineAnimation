@@ -34,7 +34,7 @@ public class DetailActivity extends AppCompatActivity implements AppBarLayout.On
     AppBarLayout appBar;
     CollapsingToolbarLayout collapsingToolbar;
     SimpleDraweeView bgImageView;
-    SubTitleView subTitleView;
+    SubtitleView subtitleView;
     TextView titleTextView;
     Toolbar toolbar;
     RecyclerView recyclerView;
@@ -47,6 +47,10 @@ public class DetailActivity extends AppCompatActivity implements AppBarLayout.On
 
     List<String> list = new ArrayList<>();
 
+    private int subtitleMargin;
+    private int minLength;
+    private int maxTitleWidth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +58,7 @@ public class DetailActivity extends AppCompatActivity implements AppBarLayout.On
         appBar = (AppBarLayout) findViewById(R.id.app_bar);
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbar);
         bgImageView = (SimpleDraweeView) findViewById(R.id.bgImageView);
-        subTitleView = (SubTitleView) findViewById(R.id.subTitle);
+        subtitleView = (SubtitleView) findViewById(R.id.subTitle);
         titleTextView = (TextView) findViewById(R.id.title);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -82,7 +86,9 @@ public class DetailActivity extends AppCompatActivity implements AppBarLayout.On
         list.add("123");
         list.add("123");
 
-
+        subtitleMargin = getResources().getDimensionPixelSize(R.dimen.subtitle_margin);
+        minLength = getResources().getDimensionPixelSize(R.dimen.min_length);
+        maxTitleWidth = ScreenUtils.screenWidth - subtitleMargin * 2 - minLength * 2;
         onAfterViews();
     }
 
@@ -113,13 +119,13 @@ public class DetailActivity extends AppCompatActivity implements AppBarLayout.On
         titleTextView.setText(title);
         if (!TextUtils.isEmpty(subTitle)) {
             ((CollapsingToolbarLayout.LayoutParams) titleTextView.getLayoutParams()).setParallaxMultiplier(0.65f);
-            subTitleView.setVisibility(View.VISIBLE);
-            subTitleView.setText(subTitle);
-            subTitleView.setTextColor(0x00ffffff);
-            subTitleView.postDelayed(new Runnable() {
+            subtitleView.setVisibility(View.VISIBLE);
+            subtitleView.setText(subTitle);
+            subtitleView.setTextColor(0x00ffffff);
+            subtitleView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    subTitleView.animate(1);
+                    subtitleView.animate(1);
                     appBar.addOnOffsetChangedListener(DetailActivity.this);
                 }
             }, 500);
@@ -127,13 +133,13 @@ public class DetailActivity extends AppCompatActivity implements AppBarLayout.On
             titleTextView.post(new Runnable() {
                 @Override
                 public void run() {
-                    calculateSubTitleSize();
+                    calculateSubTitle();
                 }
             });
         } else {
             titleTextView.setY(ScreenUtils.dip2px(16));
             ((CollapsingToolbarLayout.LayoutParams) titleTextView.getLayoutParams()).setParallaxMultiplier(0.5f);
-            subTitleView.setVisibility(View.GONE);
+            subtitleView.setVisibility(View.GONE);
         }
 
         bgImageView.setImageURI(backgroundImage);
@@ -144,8 +150,8 @@ public class DetailActivity extends AppCompatActivity implements AppBarLayout.On
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                subTitleView.setPercent(0);
-                subTitleView.animate(1);
+                subtitleView.setPercent(0);
+                subtitleView.animate(1);
             }
         });
     }
@@ -158,7 +164,7 @@ public class DetailActivity extends AppCompatActivity implements AppBarLayout.On
             if (p < 0) {
                 p = 0;
             }
-            subTitleView.setPercent(p);
+            subtitleView.setPercent(p);
         }
 
 //        if (Math.abs(verticalOffset) > appBarLayout.getHeight() / 2) {
@@ -173,29 +179,26 @@ public class DetailActivity extends AppCompatActivity implements AppBarLayout.On
 
     }
 
-    public void calculateSubTitleSize() {
+    public void calculateSubTitle() {
         int titleWidth = titleTextView.getWidth();
 
-        if (titleWidth > (ScreenUtils.screenWidth - getResources().getDimensionPixelSize(R.dimen.min_line) * 4)) {
-            titleTextView.getLayoutParams().width = ScreenUtils.screenWidth - getResources().getDimensionPixelSize(R.dimen.min_line) * 4;
-            subTitleView.getLayoutParams().width = ScreenUtils.screenWidth - getResources().getDimensionPixelSize(R.dimen.min_line) * 2;
-            subTitleView.setMinLine(getResources().getDimensionPixelSize(R.dimen.min_line) * 2);
-            subTitleView.requestLayout();
+        if (titleWidth > maxTitleWidth) {
+            titleTextView.getLayoutParams().width = maxTitleWidth;
+            subtitleView.getLayoutParams().width = maxTitleWidth + minLength * 2;
+            subtitleView.setLength(minLength * 2);
+            subtitleView.requestLayout();
             titleTextView.requestLayout();
-        } else if (subTitleView.getWidth() < ScreenUtils.screenWidth - getResources().getDimensionPixelSize(R.dimen.min_line) * 2) {
-            if (titleWidth + getResources().getDimensionPixelSize(R.dimen.min_line) * 6 > ScreenUtils.screenWidth) {
-                subTitleView.getLayoutParams().width = ScreenUtils.screenWidth - getResources().getDimensionPixelSize(R.dimen.min_line) * 2;
-                subTitleView.setMinLine(subTitleView.getLayoutParams().width - titleWidth);
-            } else if (subTitleView.getWidth() < titleWidth + getResources().getDimensionPixelSize(R.dimen.min_line) * 4) {
-                subTitleView.getLayoutParams().width = titleWidth + getResources().getDimensionPixelSize(R.dimen.min_line) * 4;
-                subTitleView.setMinLine(getResources().getDimensionPixelSize(R.dimen.min_line) * 4);
-            }
-            subTitleView.setMinLine(subTitleView.getWidth() - titleWidth);
-            subTitleView.requestLayout();
-            titleTextView.requestLayout();
+        } else if (subtitleView.getWidth() > ScreenUtils.screenWidth - subtitleMargin * 2) {
+            subtitleView.getLayoutParams().width = ScreenUtils.screenWidth - subtitleMargin * 2;
+            subtitleView.setLength(subtitleView.getLayoutParams().width - titleWidth);
+            subtitleView.requestLayout();
+        } else if (subtitleView.getWidth() < titleWidth + minLength * 2) {
+            subtitleView.getLayoutParams().width = titleWidth + minLength * 2;
+            subtitleView.setLength(subtitleView.getLayoutParams().width - titleWidth);
+            subtitleView.requestLayout();
         } else {
-            subTitleView.setMinLine(subTitleView.getWidth() - titleWidth);
-            subTitleView.requestLayout();
+            subtitleView.setLength(subtitleView.getLayoutParams().width - titleWidth);
+            subtitleView.requestLayout();
         }
     }
 
@@ -207,6 +210,6 @@ public class DetailActivity extends AppCompatActivity implements AppBarLayout.On
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        subTitleView.setVisibility(View.GONE);
+        subtitleView.setVisibility(View.GONE);
     }
 }

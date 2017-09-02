@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     final static String imageUrl = "http://s1.dwstatic.com/group1/M00/2F/52/ba35209be5aa30edaa2b9900f689f493.jpg";
     final static String text = "动物世界";
-    final static String subTitle = "春天到了，又到了交配的季节。";
+    final static String subTitle = "春天到了，又到了交配的季节。动物世界动物世界动物世界动物世界动物世界";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
